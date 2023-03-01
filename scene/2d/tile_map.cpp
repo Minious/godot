@@ -2202,6 +2202,28 @@ int TileMap::get_cell_alternative_tile(int p_layer, const Vector2i &p_coords, bo
 	return E->value.alternative_tile;
 }
 
+Node *TileMap::get_scene_cell(int p_layer, const Vector2i &p_coords) const {
+	ERR_FAIL_INDEX_V(p_layer, (int)layers.size(), nullptr);
+
+	const HashMap<Vector2i, TileMapCell> &tile_map = layers[p_layer].tile_map;
+
+	if (!tile_map.has(p_coords)) {
+		return nullptr;
+	}
+
+	Vector2i pk(p_coords);
+	HashMap<Vector2i, TileMapCell>::ConstIterator E = tile_map.find(pk);
+
+	Vector2i qk = _coords_to_quadrant_coords(p_layer, pk);
+
+	HashMap<Vector2i, TileMapQuadrant>::ConstIterator Q = layers[p_layer].quadrant_map.find(qk);
+
+	ERR_FAIL_COND_V(!Q, nullptr);
+	TileMapQuadrant q = Q->value;
+
+	return get_node_or_null(q.scenes[p_coords]);
+}
+
 TileData *TileMap::get_cell_tile_data(int p_layer, const Vector2i &p_coords, bool p_use_proxies) const {
 	int source_id = get_cell_source_id(p_layer, p_coords, p_use_proxies);
 	if (source_id == TileSet::INVALID_SOURCE) {
@@ -4115,6 +4137,7 @@ void TileMap::_bind_methods() {
 	ClassDB::bind_method(D_METHOD("get_cell_source_id", "layer", "coords", "use_proxies"), &TileMap::get_cell_source_id, DEFVAL(false));
 	ClassDB::bind_method(D_METHOD("get_cell_atlas_coords", "layer", "coords", "use_proxies"), &TileMap::get_cell_atlas_coords, DEFVAL(false));
 	ClassDB::bind_method(D_METHOD("get_cell_alternative_tile", "layer", "coords", "use_proxies"), &TileMap::get_cell_alternative_tile, DEFVAL(false));
+	ClassDB::bind_method(D_METHOD("get_scene_cell", "layer", "coords"), &TileMap::get_scene_cell);
 	ClassDB::bind_method(D_METHOD("get_cell_tile_data", "layer", "coords", "use_proxies"), &TileMap::get_cell_tile_data, DEFVAL(false));
 
 	ClassDB::bind_method(D_METHOD("get_coords_for_body_rid", "body"), &TileMap::get_coords_for_body_rid);

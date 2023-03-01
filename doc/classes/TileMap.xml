@@ -89,6 +89,14 @@
 				Returns the tile alternative ID of the cell on layer [param layer] at [param coords]. If [param use_proxies] is [code]false[/code], ignores the [TileSet]'s tile proxies, returning the raw alternative identifier. See [method TileSet.map_tile_proxy].
 			</description>
 		</method>
+		<method name="get_scene_cell" qualifiers="const">
+			<return type="Node" />
+			<param index="0" name="layer" type="int" />
+			<param index="1" name="coords" type="Vector2i" />
+			<description>
+				Blabla
+			</description>
+		</method>
 		<method name="get_cell_atlas_coords" qualifiers="const">
 			<return type="Vector2i" />
 			<param index="0" name="layer" type="int" />
